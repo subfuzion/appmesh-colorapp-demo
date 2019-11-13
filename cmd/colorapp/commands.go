@@ -357,18 +357,11 @@ func formatUpdateRouteResponse(resp *appmesh.UpdateRouteResponse) string {
 	if resp == nil {
 		return ""
 	}
-
-	sb := &strings.Builder{}
-	t := tmpl.Parse("update_route_response.tmpl")
-	t.Execute(sb, resp.Route)
-	return sb.String()
+	return tmpl.Execute("update_route_response.tmpl", resp.Route)
 }
 
 func formatGetRouteResponse(resp *appmesh.DescribeRouteResponse) string {
-	sb := &strings.Builder{}
-	t := tmpl.Parse("get_route_response.tmpl")
-	t.Execute(sb, resp.Route)
-	return sb.String()
+	return tmpl.Execute("get_route_response.tmpl", resp.Route)
 }
 
 func getStackUrlHandler(cmd *cobra.Command, args []string) {

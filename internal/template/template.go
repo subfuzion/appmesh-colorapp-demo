@@ -19,7 +19,8 @@ limitations under the License.
 package template
 
 import (
-	"text/template"
+	"strings"
+	tt "text/template"
 
 	"github.com/gobuffalo/packr/v2"
 
@@ -28,6 +29,7 @@ import (
 
 type Template struct {
 	Box *packr.Box
+	cache map[string]*tt.Template
 }
 
 func New(box *packr.Box) *Template {
@@ -50,11 +52,29 @@ func (t *Template) Read(name string) string {
 	return s
 }
 
-func (t *Template) Parse(name string) *template.Template {
-	tmpl := template.New(name)
-	tmpl, err := tmpl.Parse(t.Read(name))
-	if err != nil {
-		io.Fatal(1, "Parsing %s: ", name, err)
+func (t *Template) Parse(name string) *tt.Template {
+	if t.cache == nil {
+		t.cache = map[string]*tt.Template{}
+	}
+
+	var tmpl *tt.Template
+	var exists bool
+	var err error
+
+	if tmpl, exists = t.cache[name]; !exists {
+		tmpl = tt.New(name)
+		tmpl, err = tmpl.Parse(t.Read(name))
+		if err != nil {
+			io.Fatal(1, "Parsing %s: ", name, err)
+		}
+		t.cache[name] = tmpl
 	}
 	return tmpl
+}
+
+func (t *Template) Execute(name string, data interface{}) string {
+	tmpl := t.Parse(name)
+	sb := &strings.Builder{}
+	tmpl.Execute(sb, data)
+	return sb.String()
 }

@@ -15,7 +15,7 @@ To install the Color App demo CLI on your system:
 
 * If you have Go 1.12+ installed on your system, simply run
 
-    $ go get github.com/subfuzion/appmesh-colorapp-demo/...
+    $ go get github.com/subfuzion/meshdemo/cmd/colorapp
 
 * Download the latest release for Linux (linux/amd64), macOS (darwin/amd64), or Windows (windows/amd64) from
 
